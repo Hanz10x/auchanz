@@ -34,9 +34,8 @@ partition プレイモード
 				--> [No,されない]===goaljudge===
 	
 		===game=== --> "コース逸脱判定"
-		--> ===goaljudge===
-	
-		===goaljudge=== --> "ゴール判定"
+		"コース逸脱判定" --> ===goaljudge===
+		'===goaljudge=== --> "ゴール判定"
 	end partition
 
 	"リザルト画面" --> "初期メニュー描画"
@@ -44,7 +43,12 @@ partition プレイモード
 end partition
 
 partition オプション
-	"オプション項目描画" --> "い"
+	"オプション項目描画" --> "オプション選択決定"
+	"オプション選択決定" --> "オプション終了"
+	if "ゲーム中?" then
+		--> [Yes,ゲームから]"プレイヤー操作受付"
+	else
+		--> [No,メインから]"モード選択決定"
 end partition
 
 @enduml
