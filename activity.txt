@@ -1,7 +1,7 @@
 @startuml
 
-(*) --> "初期メニュー描画" as menustart
-menustart --> "モード選択決定"
+(*) --> "初期メニュー描画"
+"初期メニュー描画" --> "モード選択決定"
 
 if "ゲーム終了?" then
 	--> [Yes,ゲーム終了] (*)
@@ -9,14 +9,42 @@ else
 endif
 
 if "プレイモード?" then
-	partition "プレイモード"
-		--> [Yes,プレイモード] "ステージ初期化" as gamestart
+	partition プレイモード
+		--> [Yes,プレイモード] "ステージ初期化"
 	end partition
 else
-	partition "オプション"
-	--> [No,オプションモード] "オプション項目描画" as optionstart
+	partition オプション
+		--> [No,オプションモード] "オプション項目描画"
+	end partition
 endif
 
---> menustart
+partition プレイモード
+	partition 判定ループ
+		"ステージ初期化" --> "ゴール判定"
+			if "ゴールした?" then
+				--> [Yes,ゴール済]"リザルト画面"
+			else
+				--> [No,未ゴール]===game===
+			endif
+	
+		===game=== --> "プレイヤー操作受付"
+			if "オプション呼出?" then
+				--> [Yes,された]"オプション項目描画"
+			else
+				--> [No,されない]===goaljudge===
+	
+		===game=== --> "コース逸脱判定"
+		--> ===goaljudge===
+	
+		===goaljudge=== --> "ゴール判定"
+	end partition
+
+	"リザルト画面" --> "初期メニュー描画"
+		
+end partition
+
+partition オプション
+	"オプション項目描画" --> "い"
+end partition
 
 @enduml
