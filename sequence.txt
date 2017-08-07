@@ -1,0 +1,49 @@
+@startuml
+
+actor "プレイヤー" as player
+control "ゲームステージ管理イベント" as stage
+entity "機体" as body
+entity "コース" as course
+entity "ゴール地点" as goal
+participant "獲得予定金" as score
+database "通算獲得金" as allscore
+
+group ゲームプレイ開始時の処理
+	autonumber 1 1
+	stage -> stage : ゴール判定スイッチ変数を初期化
+	stage -> body : 座標を初期位置へ変更
+	stage -> course : 逸脱距離量を初期化
+	stage -> goal : ゴールの座標を取得
+	stage -> score : 獲得予定金を初期化
+	autonumber stop
+end opt
+
+loop ゲームプレイ中判定
+	stage -> stage : ゴール座標を超えているか？
+	stage -> body : 機体の位置と高度と速度を取得
+	stage -> stage : 取得しておいたゴール座標と照合
+
+	alt ゴールしていた場合
+		stage -> stage : ゴール判定スイッチ変数をオン
+		stage -> course : 逸脱距離量を取得
+		stage -> score : 獲得予定金を取得
+		stage -> stage : 最終的な獲得金を計算
+		stage -> allscore : 獲得予定金を加算
+		stage -> player : ゲーム終了
+	else ゴールしていない場合
+		stage -> stage : ゴール判定スイッチ変数はオフのまま
+	end alt
+
+	player -> body : 座標と速度を操作
+	stage -> stage : コースから逸脱しているか？
+	stage -> course : コースの座標を取得
+	stage -> stage : コース座標と照合
+
+	alt コースから逸脱していた場合
+		stage -> course : 逸脱距離量に加算
+	end alt
+
+	stage -> score : 獲得予定金に加算
+end loop
+
+@enduml

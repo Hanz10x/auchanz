@@ -1,0 +1,22 @@
+@startuml
+
+(*) --> "初期メニュー描画" as menustart
+menustart --> "モード選択決定"
+
+if "ゲーム終了?" then
+	--> [Yes,ゲーム終了] (*)
+else
+endif
+
+if "プレイモード?" then
+	partition "プレイモード"
+		--> [Yes,プレイモード] "ステージ初期化" as gamestart
+	end partition
+else
+	partition "オプション"
+	--> [No,オプションモード] "オプション項目描画" as optionstart
+endif
+
+--> menustart
+
+@enduml
